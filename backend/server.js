@@ -19,7 +19,6 @@ app.use(
   cors({
     origin: [
       "https://task-tracker-mi17-7y5hybdkt-animus1017s-projects.vercel.app",
-      "https://task-tracker-mi17-7y5hybdkt-animus1017s-projects.vercel.app/",
     ],
     credentials: true,
   })
