@@ -1,4 +1,12 @@
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+// Use a CORS proxy for development
+const useProxy = true; // Set this to false when backend CORS is properly configured
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+
+// Use environment variable or fallback
+const BACKEND_URL =
+  process.env.REACT_APP_BASE_URL ||
+  "https://task-tracker-69b9.onrender.com/api/v1";
+const BASE_URL = useProxy ? `${CORS_PROXY}${BACKEND_URL}` : BACKEND_URL;
 
 // AUTH ENDPOINTS
 export const endpoints = {

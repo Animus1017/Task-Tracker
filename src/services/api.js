@@ -1,14 +1,20 @@
 import axios from "axios";
 
+// Use a CORS proxy for development
+const useProxy = true; // Set this to false when backend CORS is properly configured
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+const BACKEND_URL = "https://task-tracker-69b9.onrender.com/api/v1";
+
 const API_URL =
   process.env.REACT_APP_API_URL ||
-  "https://task-tracker-69b9.onrender.com/api/v1";
+  (useProxy ? `${CORS_PROXY}${BACKEND_URL}` : BACKEND_URL);
+
 const COOKIE_NAME = process.env.REACT_APP_COOKIE_NAME || "TaskTracker";
 
 // Create axios instance with default config
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
+  withCredentials: !useProxy, // Must be false when using CORS proxy
 });
 
 // Add a request interceptor to include the token in the Authorization header
@@ -18,6 +24,12 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // When using CORS proxy, add extra headers
+    if (useProxy) {
+      config.headers["X-Requested-With"] = "XMLHttpRequest";
+    }
+
     return config;
   },
   (error) => {
