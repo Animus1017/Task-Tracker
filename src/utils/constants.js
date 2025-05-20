@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://localhost:5000/api/v1";
+export const API_BASE_URL = "https://task-tracker-69b9.onrender.com/api/v1";
 
 export const STATUS = {
   IDLE: "idle",

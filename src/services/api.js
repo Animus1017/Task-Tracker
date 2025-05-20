@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:4000/api/v1";
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://task-tracker-69b9.onrender.com/api/v1";
 const COOKIE_NAME = process.env.REACT_APP_COOKIE_NAME || "TaskTracker";
 
 // Create axios instance with default config
