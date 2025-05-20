@@ -23,7 +23,7 @@ exports.resetPasswordToken = async (req, res) => {
       },
       { new: true }
     );
-    const resetUrl = `https://task-tracker-mi17.vercel.app/update-password/${token}`;
+    const resetUrl = `https://task-tracker-mi17-7y5hybdkt-animus1017s-projects.vercel.app/update-password/${token}`;
     const mailResponse = await mailSender(
       email,
       "Password reset link from StudyNotion",
