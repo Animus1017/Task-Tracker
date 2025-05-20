@@ -37,44 +37,201 @@ api.interceptors.request.use(
   }
 );
 
+// Helper function for direct API fetch with auth
+const directFetch = async (endpoint, method = "GET", data = null) => {
+  const token = localStorage.getItem(COOKIE_NAME);
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const options = {
+    method,
+    headers,
+    mode: "cors",
+  };
+
+  if (data && (method === "POST" || method === "PUT")) {
+    options.body = JSON.stringify(data);
+  }
+
+  const response = await fetch(`${BACKEND_URL}${endpoint}`, options);
+  return response.json();
+};
+
 // Project APIs
 export const createProject = async (data) => {
-  const response = await api.post("/projects/create", data);
-  return response.data;
+  try {
+    // Try direct fetch first
+    try {
+      const directData = await directFetch("/projects/create", "POST", data);
+      if (directData.success) {
+        return directData;
+      }
+    } catch (directError) {
+      console.log("Direct fetch failed, trying proxy...", directError);
+    }
+
+    // Fall back to proxy
+    const response = await api.post("/projects/create", data);
+    return response.data;
+  } catch (error) {
+    console.error("Create project error:", error);
+    throw error;
+  }
 };
 
 export const getProjects = async () => {
-  const response = await api.get("/projects/all");
-  return response.data;
+  try {
+    // Try direct fetch first
+    try {
+      const directData = await directFetch("/projects/all");
+      if (directData.success) {
+        return directData;
+      }
+    } catch (directError) {
+      console.log("Direct fetch failed, trying proxy...", directError);
+    }
+
+    // Fall back to proxy
+    const response = await api.get("/projects/all");
+    return response.data;
+  } catch (error) {
+    console.error("Get projects error:", error);
+    throw error;
+  }
 };
 
 export const updateProject = async (projectId, data) => {
-  const response = await api.put(`/projects/${projectId}`, data);
-  return response.data;
+  try {
+    // Try direct fetch first
+    try {
+      const directData = await directFetch(
+        `/projects/${projectId}`,
+        "PUT",
+        data
+      );
+      if (directData.success) {
+        return directData;
+      }
+    } catch (directError) {
+      console.log("Direct fetch failed, trying proxy...", directError);
+    }
+
+    // Fall back to proxy
+    const response = await api.put(`/projects/${projectId}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Update project error:", error);
+    throw error;
+  }
 };
 
 export const deleteProject = async (projectId) => {
-  const response = await api.delete(`/projects/${projectId}`);
-  return response.data;
+  try {
+    // Try direct fetch first
+    try {
+      const directData = await directFetch(`/projects/${projectId}`, "DELETE");
+      if (directData.success) {
+        return directData;
+      }
+    } catch (directError) {
+      console.log("Direct fetch failed, trying proxy...", directError);
+    }
+
+    // Fall back to proxy
+    const response = await api.delete(`/projects/${projectId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Delete project error:", error);
+    throw error;
+  }
 };
 
 // Task APIs
 export const createTask = async (data) => {
-  const response = await api.post("/tasks/create", data);
-  return response.data;
+  try {
+    // Try direct fetch first
+    try {
+      const directData = await directFetch("/tasks/create", "POST", data);
+      if (directData.success) {
+        return directData;
+      }
+    } catch (directError) {
+      console.log("Direct fetch failed, trying proxy...", directError);
+    }
+
+    // Fall back to proxy
+    const response = await api.post("/tasks/create", data);
+    return response.data;
+  } catch (error) {
+    console.error("Create task error:", error);
+    throw error;
+  }
 };
 
 export const getTasks = async (projectId) => {
-  const response = await api.get(`/tasks/project/${projectId}`);
-  return response.data;
+  try {
+    // Try direct fetch first
+    try {
+      const directData = await directFetch(`/tasks/project/${projectId}`);
+      if (directData.success) {
+        return directData;
+      }
+    } catch (directError) {
+      console.log("Direct fetch failed, trying proxy...", directError);
+    }
+
+    // Fall back to proxy
+    const response = await api.get(`/tasks/project/${projectId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Get tasks error:", error);
+    throw error;
+  }
 };
 
 export const updateTask = async (taskId, data) => {
-  const response = await api.put(`/tasks/${taskId}`, data);
-  return response.data;
+  try {
+    // Try direct fetch first
+    try {
+      const directData = await directFetch(`/tasks/${taskId}`, "PUT", data);
+      if (directData.success) {
+        return directData;
+      }
+    } catch (directError) {
+      console.log("Direct fetch failed, trying proxy...", directError);
+    }
+
+    // Fall back to proxy
+    const response = await api.put(`/tasks/${taskId}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Update task error:", error);
+    throw error;
+  }
 };
 
 export const deleteTask = async (taskId) => {
-  const response = await api.delete(`/tasks/${taskId}`);
-  return response.data;
+  try {
+    // Try direct fetch first
+    try {
+      const directData = await directFetch(`/tasks/${taskId}`, "DELETE");
+      if (directData.success) {
+        return directData;
+      }
+    } catch (directError) {
+      console.log("Direct fetch failed, trying proxy...", directError);
+    }
+
+    // Fall back to proxy
+    const response = await api.delete(`/tasks/${taskId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Delete task error:", error);
+    throw error;
+  }
 };
