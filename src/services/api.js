@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Use a CORS proxy for development
 const useProxy = true; // Set this to false when backend CORS is properly configured
-const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+const CORS_PROXY = "https://api.allorigins.win/raw?url=";
 const BACKEND_URL = "https://task-tracker-69b9.onrender.com/api/v1";
 
 const API_URL =

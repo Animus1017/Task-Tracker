@@ -1,6 +1,6 @@
 // Use a CORS proxy for development
 const useProxy = true; // Set this to false when backend CORS is properly configured
-const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+const CORS_PROXY = "https://api.allorigins.win/raw?url=";
 
 // Use environment variable or fallback
 const BACKEND_URL =

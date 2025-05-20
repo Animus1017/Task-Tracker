@@ -19,6 +19,9 @@ const {
   RESETPASSWORD_API,
 } = endpoints;
 
+// The actual backend URL without proxy
+const BACKEND_URL = "https://task-tracker-69b9.onrender.com/api/v1";
+
 export const sendOtp = async (email, navigate, dispatch) => {
   const toastId = toast.loading("Loading...");
   dispatch(setLoading(true));
@@ -83,10 +86,35 @@ export const signUp = async (
   toast.dismiss(toastId);
 };
 
+// Direct login method that bypasses the CORS proxy
 export const login = async (email, password, navigate, dispatch) => {
   const toastId = toast.loading("Loading...");
   dispatch(setLoading(true));
   try {
+    // Try direct fetch approach first
+    try {
+      const directResponse = await fetch(`${BACKEND_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+        mode: "cors",
+      });
+
+      const data = await directResponse.json();
+      console.log("DIRECT LOGIN RESPONSE:", data);
+
+      if (directResponse.ok && data.success) {
+        handleSuccessfulLogin(data, navigate, dispatch);
+        toast.dismiss(toastId);
+        return;
+      }
+    } catch (directError) {
+      console.log("Direct login failed, trying proxy...", directError);
+    }
+
+    // Fall back to proxy approach
     const response = await apiConnector("POST", LOGIN_API, {
       email,
       password,
@@ -98,19 +126,7 @@ export const login = async (email, password, navigate, dispatch) => {
       throw new Error(response.data.message);
     }
 
-    toast.success("Login Successful");
-
-    // Store token in localStorage
-    localStorage.setItem(COOKIE_NAME, response.data.token);
-    // Store user data in localStorage
-    localStorage.setItem("user", JSON.stringify(response.data.data));
-
-    dispatch(setToken(response.data.token));
-    dispatch(setUser(response.data.data));
-    dispatch(setUserProfile(response.data.data));
-
-    // Navigate after all state updates
-    navigate("/dashboard");
+    handleSuccessfulLogin(response.data, navigate, dispatch);
   } catch (error) {
     console.log("LOGIN API ERROR............", error);
     toast.error("Login Failed");
@@ -118,6 +134,23 @@ export const login = async (email, password, navigate, dispatch) => {
   }
   dispatch(setLoading(false));
   toast.dismiss(toastId);
+};
+
+// Helper function to handle successful login
+const handleSuccessfulLogin = (data, navigate, dispatch) => {
+  toast.success("Login Successful");
+
+  // Store token in localStorage
+  localStorage.setItem(COOKIE_NAME, data.token);
+  // Store user data in localStorage
+  localStorage.setItem("user", JSON.stringify(data.data));
+
+  dispatch(setToken(data.token));
+  dispatch(setUser(data.data));
+  dispatch(setUserProfile(data.data));
+
+  // Navigate after all state updates
+  navigate("/dashboard");
 };
 
 export const getPasswordResetToken = async (email, setEmailSent, dispatch) => {
